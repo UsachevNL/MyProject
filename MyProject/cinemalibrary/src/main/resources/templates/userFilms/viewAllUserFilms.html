@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Фильмы</title>
+  <style>
+    .book-link {
+      text-decoration: none;
+    }
+
+    .book-link:hover {
+      color: #001445;
+    }
+
+    .not-enough-book {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+  <h1>Фильмы пользователя</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Фильмы</th>
+      <th scope="col">Дата начала аренды фильма</th>
+      <th scope="col">Дата окончания аренды фильма</th>
+
+      <th scope="col">Период аренды</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--        Перебор пользователей-->
+    <tr th:each="order: ${orderss}">
+      <td th:text="${order.film.title}"></td>
+
+      <td th:text="
+          ${order.rentDate.getDayOfMonth()} + '-' +
+          ${order.rentDate.getMonthValue()} + '-' +
+          ${order.rentDate.getYear()}">
+      </td>
+      <td th:if="${!order.returned}" style="color: red" th:text="${order.returnDate.getDayOfMonth()} + '-' + ${order.returnDate.getMonthValue()} + '-' + ${order.returnDate.getYear()} + ' (По плану)'"></td>
+      <td th:if="${order.returned}"  th:text="${order.returnDate.getDayOfMonth()} + '-' + ${order.returnDate.getMonthValue()} + '-' + ${order.returnDate.getYear()}"></td>
+      <td th:text="${order.returned} ? 'Да' : 'Нет'"></td>
+      <td th:text="${order.rentPeriod} + ' месяц(а)'"></td>
+      <td>
+
+        <!--        TODO доделать-->
+        <a
+                th:if="!${order.returned}"
+                th:href="'/order/return-film/' + ${order.id}"
+                class="btn btn-primary"
+                role="button"
+                aria-disabled="true">Вернуть фильм</a>
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
+
+  <nav aria-label="Pagination" th:if="${orderss.totalPages gt 0}">
+    <ul class="pagination justify-content-center font-weight-bold">
+      <li class="page-item" th:classappend="${orderss.number eq 0} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/orderss?page={id}(id=${orderss.number lt 2 ? 1 : orderss.number})}"
+           aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"
+          th:each="i : ${#numbers.sequence(1, orderss.totalPages, 1)}"
+          th:classappend="${i eq orderss.number + 1} ? 'active'">
+        <a class="page-link" th:href="@{/orderss?page={id}(id=${i})}" th:text="${i}"
+           th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+      </li>
+      <li class="page-item" th:classappend="${orderss.number eq orderss.totalPages - 1} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/publishies?page={id}(id=${orderss.number + 2})}"
+           aria-label="Next" title="Next Page" data-toggle="tooltip">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+</body>
+</html>

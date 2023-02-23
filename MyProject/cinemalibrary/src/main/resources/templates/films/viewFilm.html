@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Фильм</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h3 th:text="${film.getTitle()}"></h3>
+
+  <p th:text="'Жанр: ' + ${film.getGenre().getGenreText()}"></p>
+  <p th:text="'Год выхода в прокат:' + ${film.getPremierYear()}"></p>
+  <p th:text="'Страна:' + ${film.getCountry()}"></p>
+  <p th:text="'Участники:'"></p>
+  <ul>
+    <li th:each="director : ${film.getDirectors()}" th:text="${director.getDirectorFIO()}"></li>
+  </ul>
+</div>
+</body>
+</html>
